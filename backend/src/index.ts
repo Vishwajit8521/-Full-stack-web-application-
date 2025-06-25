@@ -109,19 +109,34 @@ app.get('/health', async (req, res) => {
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Start server
-const server = app.listen(port, async () => {
-  console.log(`Server starting on port ${port}`);
-  console.log(`Server URL: http://localhost:${port}`);
-  console.log(`Health check: http://localhost:${port}/api/health`);
-  console.log(`API Documentation: http://localhost:${port}/api-docs`);
+// Replace the server startup code (around line 113)
+const startServer = async (retryPort = 0) => {
+  const serverPort = retryPort > 0 ? Number(port) + retryPort : Number(port);
 
-  try {
-    await initializeDatabase();
-    console.log('✅ Database tables initialized successfully!');
-  } catch (error) {
-    console.error('❌ Failed to initialize database tables:', error);
-  }
-});
+  const server = app.listen(serverPort, async () => {
+    console.log(`Server starting on port ${serverPort}`);
+    console.log(`Server URL: http://localhost:${serverPort}`);
+    console.log(`Health check: http://localhost:${serverPort}/api/health`);
+    console.log(`API Documentation: http://localhost:${serverPort}/api-docs`);
 
+    try {
+      await initializeDatabase();
+      console.log('✅ Database tables initialized successfully!');
+    } catch (error) {
+      console.error('❌ Failed to initialize database tables:', error);
+    }
+  });
+
+  server.on('error', (error: any) => {
+    if (error.code === 'EADDRINUSE' && retryPort < 10) {
+      console.log(`Port ${serverPort} is in use, trying port ${Number(port) + retryPort + 1}`);
+      startServer(retryPort + 1);
+    } else {
+      console.error('Failed to start server:', error);
+      process.exit(1);
+    }
+  });
+};
+
+startServer();
 export default app;
