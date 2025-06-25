@@ -26,7 +26,7 @@ export class TaskService {
 
       return result[0];
     } catch (error) {
-      console.error('Error creating task:', error);
+      // Error creating task
       throw new AppError('Failed to create task', 500);
     }
   }
@@ -38,7 +38,7 @@ export class TaskService {
     try {
       return await db.select().from(tasks).where(eq(tasks.userId, userId));
     } catch (error) {
-      console.error('Error fetching tasks:', error);
+      // Error fetching tasks
       throw new AppError('Failed to fetch tasks', 500);
     }
   }
@@ -66,7 +66,7 @@ export class TaskService {
       if (error instanceof AppError) {
         throw error;
       }
-      console.error('Error fetching task:', error);
+      // Error fetching task
       throw new AppError('Failed to fetch task', 500);
     }
   }
@@ -97,7 +97,7 @@ export class TaskService {
       if (error instanceof AppError) {
         throw error;
       }
-      console.error('Error updating task:', error);
+      // Error updating task
       throw new AppError('Failed to update task', 500);
     }
   }
@@ -123,7 +123,7 @@ export class TaskService {
       if (error instanceof AppError) {
         throw error;
       }
-      console.error('Error deleting task:', error);
+      // Error deleting task
       throw new AppError('Failed to delete task', 500);
     }
   }
@@ -144,7 +144,7 @@ export class TaskService {
       const result = await db.insert(tasks).values(tasksToInsert).returning();
       return result;
     } catch (error) {
-      console.error('Error creating multiple tasks:', error);
+      // Error creating multiple tasks
       throw new AppError('Failed to create tasks', 500);
     }
   }

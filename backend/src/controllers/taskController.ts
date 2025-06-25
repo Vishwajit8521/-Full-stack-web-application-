@@ -17,8 +17,7 @@ export class TaskController {
    *         application/json:
    *           schema:
    *             type: object
-   *             required:
-   *               - title
+   *             required: [title]
    *             properties:
    *               title:
    *                 type: string
@@ -220,15 +219,13 @@ export class TaskController {
    *         application/json:
    *           schema:
    *             type: object
-   *             required:
-   *               - tasks
+   *             required: [tasks]
    *             properties:
    *               tasks:
    *                 type: array
    *                 items:
    *                   type: object
-   *                   required:
-   *                     - title
+   *                   required: [title]
    *                   properties:
    *                     title:
    *                       type: string

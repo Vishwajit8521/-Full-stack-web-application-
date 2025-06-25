@@ -21,19 +21,19 @@ let isConnected = false;
 const testConnection = async () => {
   try {
     const client = await pool.connect();
-    console.log('Successfully connected to the database');
+    // Successfully connected to the database
     isConnected = true;
     client.release();
     return true;
   } catch (err) {
-    console.error('Error connecting to the database:', err);
+    // Error connecting to the database
     return false;
   }
 };
 
 // Try to connect but don't block server startup if it fails
 testConnection().catch(err => {
-  console.error('Database connection test failed:', err);
+  // Database connection test failed
 });
 
 export const db = drizzle(pool);

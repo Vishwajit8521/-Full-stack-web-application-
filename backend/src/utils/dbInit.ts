@@ -14,7 +14,7 @@ const getDatabaseName = (connectionString: string): string => {
 // Create a function to initialize the database
 async function initializeDatabase() {
   if (!process.env.DATABASE_URL) {
-    console.error('DATABASE_URL environment variable is not set');
+    // DATABASE_URL environment variable is not set
     process.exit(1);
   }
 
@@ -22,7 +22,7 @@ async function initializeDatabase() {
   const dbName = getDatabaseName(connectionString);
   
   if (!dbName) {
-    console.error('Could not extract database name from connection string');
+    // Could not extract database name from connection string
     process.exit(1);
   }
 
@@ -42,11 +42,11 @@ async function initializeDatabase() {
 
     // Create database if it doesn't exist
     if (dbCheckResult.rows.length === 0) {
-      console.log(`Database '${dbName}' does not exist. Creating...`);
+      // Database does not exist. Creating...
       await serverPool.query(`CREATE DATABASE ${dbName}`);
-      console.log(`Database '${dbName}' created successfully`);
+      // Database created successfully
     } else {
-      console.log(`Database '${dbName}' already exists`);
+      // Database already exists
     }
 
     // Close the server connection
@@ -67,7 +67,7 @@ async function initializeDatabase() {
     const existingTables = tableCheckResult.rows.map(row => row.table_name);
     
     if (existingTables.length < 2) {
-      console.log('Some tables are missing. Creating tables...');
+      // Some tables are missing. Creating tables...
       
       // Create tables using schema from models
       const createTablesQuery = `
@@ -92,18 +92,18 @@ async function initializeDatabase() {
       `;
 
       await dbPool.query(createTablesQuery);
-      console.log('Tables created successfully');
+      // Tables created successfully
     } else {
-      console.log('All required tables already exist');
+      // All required tables already exist
     }
 
     // Close the database connection
     await dbPool.end();
     
-    console.log('Database initialization completed successfully');
+    // Database initialization completed successfully
     return true;
   } catch (error) {
-    console.error('Error initializing database:', error);
+    // Error initializing database
     return false;
   }
 }
@@ -115,11 +115,11 @@ export { initializeDatabase };
 if (require.main === module) {
   initializeDatabase()
     .then(() => {
-      console.log('Database initialization script completed');
+      // Database initialization script completed
       process.exit(0);
     })
     .catch((error) => {
-      console.error('Database initialization failed:', error);
+      // Database initialization failed
       process.exit(1);
     });
 }

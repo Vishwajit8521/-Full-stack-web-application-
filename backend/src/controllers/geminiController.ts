@@ -8,35 +8,34 @@ dotenv.config(); // Load environment variables
 
 export class GeminiController {
   /**
-   * @swagger
-   * /api/gemini/generate-tasks:
-   *   post:
-   *     summary: Generate tasks based on a topic using Google Gemini API
-   *     tags: [Gemini]
-   *     security:
-   *       - bearerAuth: []
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             required:
-   *               - topic
-   *             properties:
-   *               topic:
-   *                 type: string
-   *                 description: The topic to generate tasks for
-   *     responses:
-   *       200:
-   *         description: Successfully generated tasks
-   *       400:
-   *         description: Invalid request data
-   *       401:
-   *         description: Unauthorized
-   *       500:
-   *         description: Server error
-   */
+   * @swagger
+   * /api/gemini/generate-tasks:
+   *   post:
+   *     summary: Generate tasks based on a topic using Google Gemini API
+   *     tags: [Gemini]
+   *     security:
+   *       - bearerAuth: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required: [topic]
+   *             properties:
+   *               topic:
+   *                 type: string
+   *                 description: The topic to generate tasks for
+   *     responses:
+   *       200:
+   *         description: Successfully generated tasks
+   *       400:
+   *         description: Invalid request data
+   *       401:
+   *         description: Unauthorized
+   *       500:
+   *         description: Server error
+   */
   static async generateTasks(req: Request, res: Response) {
     try {
       const { topic } = req.body;
@@ -55,7 +54,7 @@ export class GeminiController {
         data: { tasks },
       });
     } catch (error: any) {
-      console.error('Error generating tasks:', error);
+      // Error generating tasks
       return res.status(500).json({
         status: 'error',
         message: 'Failed to generate tasks.',

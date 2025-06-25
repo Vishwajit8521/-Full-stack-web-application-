@@ -18,7 +18,7 @@ api.interceptors.request.use((config) => {
       config.headers.Authorization = `Bearer ${token}`;
     }
   } catch (error) {
-    // Silent auth error in interceptor
+    // Error getting auth token
   }
   return config;
 });

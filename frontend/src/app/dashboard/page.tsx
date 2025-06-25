@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GenerateTasksForm } from '@/components/generate-tasks-form';
-import { CheckCircle, ListTodo, PlusCircle, Sparkles } from 'lucide-react';
+import { CheckCircle, ListTodo, PlusCircle, Sparkles, User, Mail, Calendar } from 'lucide-react';
 
 export default function DashboardPage() {
   const { user } = useUser();
@@ -20,6 +20,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showUserDetails, setShowUserDetails] = useState(false);
 
   // In your loadTasks function:
   const loadTasks = async () => {
@@ -76,6 +77,18 @@ export default function DashboardPage() {
   const completionPercentage =
     tasks.length > 0 ? (completedTasks / tasks.length) * 100 : 0;
 
+  // Format date for display
+  const formatDate = (dateValue: string | Date | null | undefined) => {
+    if (!dateValue) return 'N/A';
+    const dateObj = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
+    if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) return 'N/A';
+    return dateObj.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
   return (
     <div className="container mx-auto py-8 animate-fade-in">
       <div className="flex flex-col space-y-8">
@@ -84,13 +97,58 @@ export default function DashboardPage() {
             <h1 className="text-4xl font-bold gradient-heading mb-2">Welcome, {user?.firstName}!</h1>
             <p className="text-muted-foreground">Manage your tasks and boost your productivity</p>
           </div>
-          <div className="hidden md:block bg-card p-3 rounded-full shadow-md">
-            {user?.imageUrl && (
-              <img 
-                src={user.imageUrl} 
-                alt={user.firstName || 'User'} 
-                className="w-16 h-16 rounded-full"
-              />
+          <div className="hidden md:flex md:items-center md:space-x-4">
+            <div 
+              className="bg-card p-3 rounded-full shadow-md cursor-pointer transition-all hover:shadow-lg"
+              onClick={() => setShowUserDetails(!showUserDetails)}
+            >
+              {user?.imageUrl && (
+                <img 
+                  src={user.imageUrl} 
+                  alt={user.firstName || 'User'} 
+                  className="w-16 h-16 rounded-full"
+                />
+              )}
+            </div>
+            {showUserDetails && (
+              <Card className="absolute right-8 top-32 z-10 w-80 shadow-lg animate-fade-in">
+                <CardHeader className="pb-2">
+                  <CardTitle>User Profile</CardTitle>
+                  <CardDescription>Your Clerk account details</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    {user?.imageUrl && (
+                      <img 
+                        src={user.imageUrl} 
+                        alt={user.firstName || 'User'} 
+                        className="w-16 h-16 rounded-full"
+                      />
+                    )}
+                    <div>
+                      <p className="font-medium text-lg">{user?.fullName || 'User'}</p>
+                      <p className="text-muted-foreground text-sm">@{user?.username || user?.id?.substring(0, 8)}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">{user?.primaryEmailAddress?.emailAddress || 'No email provided'}</span>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Joined: {formatDate(user?.createdAt)}</span>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Last updated: {formatDate(user?.updatedAt)}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             )}
           </div>
         </div>

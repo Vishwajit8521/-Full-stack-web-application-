@@ -45,7 +45,7 @@ export class GeminiService {
       
       return tasks.slice(0, 5);
     } catch (error) {
-      console.error('Error generating tasks:', error);
+      // Error generating tasks
       throw new AppError('Failed to generate tasks', 500);
     }
   }
